@@ -1,19 +1,5 @@
-name: 'Deploy'
-description: 'Deploys the code to an environment'
+name: 'Build'
+description: 'Builds a Docker image and pushes it to ECR'
 runs:
   using: 'docker'
   image: 'Dockerfile'
-  args:
-    - ${{ inputs.name }}
-    - ${{ inputs.namespace }}
-    - ${{ inputs.overlay }}
-inputs:
-  name:
-    description: 'Name of the app (eg. Broadband Plans)'
-    required: true
-  namespace:
-    description: 'Kubernetes namespace to deploy to'
-    required: true
-  overlay:
-    description: 'Kustomize overlay to apply (eg. staging, production)'
-    required: true
