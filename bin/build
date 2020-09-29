@@ -34,6 +34,6 @@ IMAGE="$ECR_ENDPOINT/$REPOSITORY:$TAG"
 # Build Image
 ################################################################################
 
-DOCKER_BUILDKIT=1 docker build -t "$IMAGE.build" \
+docker build -t "$IMAGE.build" \
   --build-arg GIT_SHA="$GIT_SHA" \
   --build-arg VERSION="$TAG" .
