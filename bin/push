@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 set -eo pipefail
+set -x
 
 ################################################################################
 # Validate Inputs
@@ -23,19 +24,23 @@ TAG=$1
 REPOSITORY=$2
 
 ################################################################################
-# Constants
-################################################################################
-
-DIR="$(dirname "${BASH_SOURCE[0]}")"
-
-################################################################################
 # Set Variables
 ################################################################################
 
-IMAGE="$ECR_ENDPOINT/$REPOSITORY:$TAG"
+IMAGE="ghcr.io/switcher-ie/$REPOSITORY:$TAG"
 
 ################################################################################
 # Push to Repository
 ################################################################################
 
 docker push "$IMAGE.build"
+
+if [[ "$GITHUB_REF" == "refs/head/master" ]]; then
+  docker tag "$IMAGE.build" "$MASTER_CACHE_TAG"
+  docker push "$MASTER_CACHE_TAG"
+fi
+
+if [[ -v GITHUB_PR_NUMBER ]]; then
+  docker tag "$IMAGE.build" "$PR_CACHE_TAG"
+  docker push "$PR_CACHE_TAG"
+fi

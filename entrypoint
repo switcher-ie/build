@@ -6,8 +6,8 @@ set -eo pipefail
 # Set Variables
 ################################################################################
 
-TAG="${GITHUB_SHA::7}"
 APP="${GITHUB_REPOSITORY/switcher-ie\//}"
+TAG=$(git rev-parse --short=7 HEAD)
 
 ################################################################################
 # Set Path
@@ -16,14 +16,27 @@ APP="${GITHUB_REPOSITORY/switcher-ie\//}"
 export PATH="$PATH:/bin"
 
 ################################################################################
-# Login to ECR
+# Extract PR Number from GitHub Event Context
 ################################################################################
 
-$(aws ecr get-login --no-include-email)
+if [[ "$GITHUB_EVENT_NAME" == "pull_request" ]]; then
+  GITHUB_PR_NUMBER=$(jq '.pull_request.number' "$GITHUB_EVENT_PATH")
+  export GITHUB_PR_NUMBER
+fi
+
+################################################################################
+# Login to GitHub Container Registry
+################################################################################
+
+echo "$INPUT_GITHUB_CONTAINER_REGISTRY_TOKEN" | docker login ghcr.io -u switcher-ie-deploy --password-stdin
 
 ################################################################################
 # Build Image
 ################################################################################
+
+export DOCKER_BUILDKIT=1
+export MASTER_CACHE_TAG="ghcr.io/switcher-ie/$APP:master.cache"
+export PR_CACHE_TAG="ghcr.io/switcher-ie/$APP:GH-PR-$GITHUB_PR_NUMBER.cache"
 
 build "${TAG}" "${GITHUB_SHA}" "${APP}"
 
