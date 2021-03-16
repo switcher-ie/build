@@ -1,5 +1,9 @@
 name: 'Build'
-description: 'Builds a Docker image and pushes it to ECR'
+description: 'Builds a Docker image and pushes it to GitHub Container Registry'
+inputs:
+  github_container_registry_token:
+    description: 'A GitHub Personal Access Token with `write:packages` scope'
+    required: true
 runs:
   using: 'docker'
   image: 'Dockerfile'
