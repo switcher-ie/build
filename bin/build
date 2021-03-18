@@ -28,14 +28,15 @@ REPOSITORY=$3
 # Set Variables
 ################################################################################
 
-IMAGE="ghcr.io/switcher-ie/$REPOSITORY:$TAG"
+IMAGE="ghcr.io/switcher-ie/$REPOSITORY:$TAG.build"
 
 ################################################################################
 # Build Image
 ################################################################################
 
-docker build -t "$IMAGE.build" \
+docker build -t "$IMAGE" \
   --build-arg BUILDKIT_INLINE_CACHE=1 \
+  --cache-from "$IMAGE" \
   --cache-from "$MASTER_CACHE_TAG" \
   --cache-from "$PR_CACHE_TAG" \
   --build-arg GIT_SHA="$GIT_SHA" \
