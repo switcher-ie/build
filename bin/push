@@ -35,7 +35,7 @@ IMAGE="ghcr.io/switcher-ie/$REPOSITORY:$TAG"
 
 docker push "$IMAGE.build"
 
-if [[ "$GITHUB_REF" == "refs/heads/master" ]]; then
+if [[ "$GITHUB_REF" == "refs/heads/master" ]] || [[ "$GITHUB_REF" == "refs/heads/main" ]]; then
   docker tag "$IMAGE.build" "$MASTER_CACHE_TAG"
   docker push "$MASTER_CACHE_TAG"
 fi
