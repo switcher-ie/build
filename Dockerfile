@@ -1,7 +1,6 @@
 FROM alpine:latest
 
-RUN apk add bash git jq
-RUN apk add docker --repository=https://dl-cdn.alpinelinux.org/alpine/edge/community
+RUN apk add bash docker git jq
 
 ADD entrypoint /entrypoint
 ADD bin /bin
